@@ -12,11 +12,10 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	@Override
 	String search(String text) throws Exception {
 		//Write your code here
-		String result;
+		String result = null;
 		try {
-			String dbUrl = "jdbc:postgres://bggonlbtguporu:84367c82acd74324095101e2e8bd7571d00226bff38b06f3fd7a763f50979fca@ec2-23-23-244-83.compute-1.amazonaws.com:5432/dbjkemjqp9m8oa";
-			Connection connection = DriverManager.getConnection(System.getenv("DATABASE_URL"));
-			PreparedStatement stmt = connection.prepareStatement("SELECT response FROM ChatLookup WHERE keyword=\'?\'");
+			Connection connection = this.getConnection();
+			PreparedStatement stmt = connection.prepareStatement("SELECT response FROM ChatLookup WHERE keyword=?;");
 			stmt.setString(1, text);
 			ResultSet rs = stmt.executeQuery();
 			if(rs.next()) {
@@ -25,11 +24,13 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 			rs.close();
 			stmt.close();
 			connection.close();
-			return result;
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		//return null;
+		if(result!=null) {
+			return result;
+		}
 		throw new Exception("NOT FOUND");
 	}
 
